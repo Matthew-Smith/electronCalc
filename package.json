@@ -1,0 +1,22 @@
+{
+  "name": "electronCalc",
+  "version": "1.0.0",
+  "description": "making a simple electron calculator",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Matthew-Smith/electronCalc.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Matthew-Smith/electronCalc/issues"
+  },
+  "homepage": "https://github.com/Matthew-Smith/electronCalc",
+  "devDependencies": {
+    "electron": "^2.0.2"
+  }
+}
