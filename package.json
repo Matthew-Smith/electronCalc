@@ -1,5 +1,5 @@
 {
-  "name": "electronCalc",
+  "name": "electron-calc",
   "version": "1.0.0",
   "description": "making a simple electron calculator",
   "main": "main.js",
