@@ -7,12 +7,8 @@ let resultsElem = document.getElementById('results');
 let OPERATOR_REGEX = /[\*\+\-\/]/;
 let LAST_NUMBER_REGEX = /(?:[\*\+\-\/])([\d.]*(?![\*\+\-\/]))+$/;
 
-let negateLast = () => {
-    // let splitEquation = LAST_NUMBER_REGEX.exec(resultsElem.innerText);
-
-    // if (splitEquation && splitEquation[1]) {
-    //     resultsElem.innerText = resultsElem.innerText.slice(0, -splitEquation[1].length) + '-' + resultsElem.innerText.slice(splitEquation[1].length);
-    // }
+let openHistory = () => {
+    ipcRenderer.send('open-history');
 }
 
 let backspace = () => {
@@ -91,8 +87,8 @@ function initButtons(buttons) {
             case 'backspace':
                 button.onclick = backspace;
                 break;
-            case 'negate':
-                button.onclick = negateLast;
+            case 'history':
+                button.onclick = openHistory;
                 break;
             case '.':
                 button.onclick = decimal;

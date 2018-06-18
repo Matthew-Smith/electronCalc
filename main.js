@@ -11,7 +11,7 @@ let equations = [
 ];
 
 let createHistoryWindow = () => {
-    historyWindow = new BrowserWindow({width: 800, height: 400, alwaysOnTop: true});
+    historyWindow = new BrowserWindow({width: 200, height: 400, alwaysOnTop: true});
     
     // Emitted when the window is closed.
     historyWindow.on('closed', () => {historyWindow = null;});
@@ -36,28 +36,30 @@ function createWindow () {
     // Emitted when the window is closed.
     win.on('closed', () => {win = null;});
 
-    let menu = Menu.buildFromTemplate([
-        {
-            label: 'File',
-            submenu: [
-                {
-                    label: 'History',
-                    click: createHistoryWindow
-                },
-                {type: 'separator'},
-                {
-                    label: 'Exit',
-                    click: () => app.exit(0)
-                }
-            ]
-        }
-        ,{
-            label: 'DevTools',
-            click: () => win.webContents.openDevTools()
-        }
-    ]);
+    // let menu = Menu.buildFromTemplate([
+    //     {
+    //         label: 'File',
+    //         submenu: [
+    //             {
+    //                 label: 'History',
+    //                 click: createHistoryWindow
+    //             },
+    //             {type: 'separator'},
+    //             {
+    //                 label: 'Exit',
+    //                 click: () => app.exit(0)
+    //             }
+    //         ]
+    //     }
+    //     ,{
+    //         label: 'DevTools',
+    //         click: () => win.webContents.openDevTools()
+    //     }
+    // ]);
 
-    win.setMenu(menu);
+    // win.setMenu(menu);
+
+    win.setMenu(null);
 }
 
 // This method will be called when Electron has finished
@@ -91,3 +93,5 @@ ipcMain.on('add-evaluated-equation', (event, arg) => {
     equations.unshift(arg);
     console.log('Added equation');
 });
+
+ipcMain.on('open-history', createHistoryWindow);
