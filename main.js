@@ -1,4 +1,4 @@
-const {app, BrowserWindow, Menu} = require('electron');
+import { app, BrowserWindow, Menu } from 'electron';
 let menuTemplate = require('./menuTemplate.js')(app);
 
 // Keep a global reference of the window object, if you don't, the window will

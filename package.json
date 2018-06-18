@@ -17,6 +17,10 @@
   },
   "homepage": "https://github.com/Matthew-Smith/electronCalc",
   "devDependencies": {
-    "electron": "^2.0.2"
+    "electron-prebuilt-compile": "^2.0.2"
+  },
+  "dependencies": {
+    "is-number": "^6.0.0",
+    "string-math": "^1.2.1"
   }
 }
