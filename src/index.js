@@ -1,4 +1,5 @@
 import stringMath from 'string-math';
+import { ipcRenderer } from 'electron';
 
 
 let resultsElem = document.getElementById('results');
@@ -53,7 +54,10 @@ let operator = (op, mouseEvent) => {
 }
 
 let equals = () => {
-    resultsElem.innerText = stringMath(resultsElem.innerText);
+    let equation = resultsElem.innerText;
+    
+    ipcRenderer.send('add-evaluated-equation', equation);
+    resultsElem.innerText = stringMath(equation);
 }
 
 let clearEntry = () => {
@@ -106,3 +110,8 @@ function initButtons(buttons) {
 }
 
 let buttons = initButtons(document.getElementsByClassName('button'));
+
+
+ipcRenderer.on('equation-selected', (event, args) => {
+    resultsElem.innerText = args;
+});

@@ -1,9 +1,30 @@
-import { app, BrowserWindow, Menu } from 'electron';
-let menuTemplate = require('./menuTemplate.js')(app);
+import { app, BrowserWindow, Menu, ipcMain } from 'electron';
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
+let historyWindow;
+let equations = [
+    '2+2',
+    '3.14*8*8',
+    '654-78/8'
+];
+
+let createHistoryWindow = () => {
+    historyWindow = new BrowserWindow({width: 800, height: 400, alwaysOnTop: true});
+    
+    // Emitted when the window is closed.
+    historyWindow.on('closed', () => {historyWindow = null;});
+    historyWindow.loadFile('src/historyTemplate.html');
+    historyWindow.setMenu(null);
+    // historyWindow.webContents.openDevTools()
+    historyWindow.show();
+    historyWindow.webContents.on('did-finish-load', () => {
+        historyWindow.webContents.send('equation-list', equations);
+        console.log('sent equation list');
+        console.log(equations);
+    });
+}
 
 function createWindow () {
     // Create the browser window.
@@ -13,22 +34,30 @@ function createWindow () {
     win.loadFile('src/index.html');
 
     // Emitted when the window is closed.
-    win.on('closed', () => {
-        // Dereference the window object, usually you would store windows
-        // in an array if your app supports multi windows, this is the time
-        // when you should delete the corresponding element.
-        win = null;
-    });
+    win.on('closed', () => {win = null;});
 
-    // Add a button to open the dev tools
-    menuTemplate.push({
-        label: 'DevTools',
-        click: () => win.webContents.openDevTools()
-    });
+    let menu = Menu.buildFromTemplate([
+        {
+            label: 'File',
+            submenu: [
+                {
+                    label: 'History',
+                    click: createHistoryWindow
+                },
+                {type: 'separator'},
+                {
+                    label: 'Exit',
+                    click: () => app.exit(0)
+                }
+            ]
+        }
+        ,{
+            label: 'DevTools',
+            click: () => win.webContents.openDevTools()
+        }
+    ]);
 
-    let menu = Menu.buildFromTemplate(menuTemplate);
-
-    Menu.setApplicationMenu(menu);
+    win.setMenu(menu);
 }
 
 // This method will be called when Electron has finished
@@ -53,5 +82,12 @@ app.on('activate', () => {
     }
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+ipcMain.on('update-equation', (event, arg) => {
+    win.webContents.send('equation-selected', arg);
+    console.log('History equation selected');
+});
+
+ipcMain.on('add-evaluated-equation', (event, arg) => {
+    equations.unshift(arg);
+    console.log('Added equation');
+});
