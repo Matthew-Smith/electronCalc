@@ -1,60 +1,106 @@
 import stringMath from 'string-math';
-import isNumber from 'is-number';
+
 
 let resultsElem = document.getElementById('results');
+
+let OPERATOR_REGEX = /[\*\+\-\/]/;
+let LAST_NUMBER_REGEX = /(?:[\*\+\-\/])([\d.]*(?![\*\+\-\/]))+$/;
+
+let negateLast = () => {
+    // let splitEquation = LAST_NUMBER_REGEX.exec(resultsElem.innerText);
+
+    // if (splitEquation && splitEquation[1]) {
+    //     resultsElem.innerText = resultsElem.innerText.slice(0, -splitEquation[1].length) + '-' + resultsElem.innerText.slice(splitEquation[1].length);
+    // }
+}
+
+let backspace = () => {
+    let equation = resultsElem.innerText;
+    if (equation.length > 1) {
+        resultsElem.innerText = resultsElem.innerText.slice(0, -1);
+    }
+    else {
+        resultsElem.innerText = '0';
+    }
+}
+
+let decimal = (mouseEvent) => {
+    if (resultsElem.innerText.slice(-1) != '.') {
+        resultsElem.innerText += mouseEvent.srcElement.id;
+    }
+}
+
+let numeric = (mouseEvent) => {
+    let number = mouseEvent.srcElement.id;
+    if (resultsElem.innerText == '0') {
+        resultsElem.innerText = number;
+    } else {
+        resultsElem.innerText += number;
+    }
+}
+
+let operator = (op, mouseEvent) => {
+    let lastEquationChar = resultsElem.innerText.slice(-1);
+    if (op == lastEquationChar) {
+        return;
+    }
+
+    if (OPERATOR_REGEX.test(lastEquationChar)) {
+        resultsElem.innerText = resultsElem.innerText.slice(0, -1) + op;
+    } else {
+        resultsElem.innerText += op;
+    }
+}
+
+let equals = () => {
+    resultsElem.innerText = stringMath(resultsElem.innerText);
+}
+
+let clearEntry = () => {
+    let splitEquation = LAST_NUMBER_REGEX.exec(resultsElem.innerText);
+
+    if (!splitEquation) {
+        clearAll();
+    }
+    else if (splitEquation[1]) {
+        resultsElem.innerText = resultsElem.innerText.slice(0, -splitEquation[1].length);
+    }
+}
+
+let clearAll = () => {
+    resultsElem.innerText = '0';
+}
 
 function initButtons(buttons) {
     for (var i = 0; i < buttons.length; i++) {
         let button = buttons[i];
         switch (button.id) {
             case 'equals':
-                button.onclick = (mouseEvent) => {
-                    resultsElem.innerText = stringMath(resultsElem.innerText);
-                }
-            break;
+                button.onclick = equals;
+                break;
             case 'C':
-                button.onclick = (mouseEvent) => {
-                    // TODO regex go back to last operator and remove the current number
-                }
-            break;
+                button.onclick = clearAll;
+                break;
             case 'CE':
-                button.onclick = (mouseEvent) => {
-                    resultsElem.innerText = '0';
-                }
-            break;
+                button.onclick = clearEntry;
+                break;
             case 'backspace':
-                button.onclick = (mouseEvent) => {
-                    let equation = resultsElem.innerText;
-                    if (equation.length > 1) {
-                        resultsElem.innerText = resultsElem.innerText.slice(0, -1);
-                    }
-                    else {
-                        resultsElem.innerText = '0';
-                    }
-                }
-            break;
+                button.onclick = backspace;
+                break;
             case 'negate':
-                button.onclick = (mouseEvent) => {
-                    // TODO regex go back to last operator add a '(' and '-' then add ')' to the end
-                    // If that was already done remove the -
-                }
-            break;
+                button.onclick = negateLast;
+                break;
             case '.':
-                button.onclick = (mouseEvent) => {
-                    if (resultsElem.innerText.slice(-1) != '.') {
-                        resultsElem.innerText += mouseEvent.srcElement.id;
-                    }
-                }
-            break;
+                button.onclick = decimal;
+                break;
+            case '*':
+            case '-':
+            case '/':
+            case '+':
+                button.onclick = operator.bind(undefined, button.id);
+                break;
             default:
-                button.onclick = (mouseEvent) => {
-                    let buttonText = mouseEvent.srcElement.id;
-                    if (resultsElem.innerText == '0' && isNumber(buttonText)) {
-                        resultsElem.innerText = buttonText;
-                    } else {
-                        resultsElem.innerText += mouseEvent.srcElement.id;
-                    }
-                }
+                button.onclick = numeric;
         }
     }
 }
