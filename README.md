@@ -1,6 +1,8 @@
 # electronCalc
 Simple calculator in electron. The purpose of this is not to make an incredibly accurate calculator but to experiment and practice using electron.
 
+![screenshot](https://media.githubusercontent.com/media/Matthew-Smith/electronCalc/master/screenshot.png)
+
 ## What it does
 This app has a main window that has the standard buttons you would find on a calculator and a history window that shows all the previously evaluated equations. The math evaluations are done by the npm package String-Math.
 
